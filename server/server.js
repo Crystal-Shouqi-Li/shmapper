@@ -47,7 +47,7 @@ io.on('connection', function(socket){
   });
 });
 
-app.post('/button',(req,res)=>{
+app.post('/color',(req,res)=>{
   console.log(req.body.color);
   io.emit('newColor',{'color':req.body.color});
   res.json({"count":count});
