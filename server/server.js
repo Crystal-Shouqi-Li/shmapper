@@ -55,6 +55,11 @@ app.post('/button',(req,res)=>{
 app.post('/getUserCount',(req,res)=>{
     res.json({"count":count});
 })
+
+app.post('/form', (req, res)=>{
+  io.emit('wordCount',{'word':req.body});
+  res.json(req.body)
+})
 // ------------ Server Setup --------------//
 
 /**
