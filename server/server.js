@@ -8,7 +8,7 @@ var logger = require('morgan'); //used to log in console window all request
 var cookieParser = require('cookie-parser'); //Parse Cookie header and populate req.cookies
 var bodyParser = require('body-parser'); //allows the use of req.body in POST request
 var server = require('http').createServer(app); //creates an HTTP server instance
-
+var io = require('socket.io')(server);
 //-------------------------Express JS configs-----------------------------//
 app.use(logger('dev')); //debugs logs in terminal
 // IMPORTANT: If you don't use bodyParser then you will NOT be able to call req.body.value
@@ -19,7 +19,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))) //sets all static file calls to 
 
 //---------------API-------------------//
-
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
 
 // ------------ Server Setup --------------//
 
