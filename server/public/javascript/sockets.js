@@ -1,7 +1,8 @@
 
 var socket = io();
-socket.on('newColor',function(data){
-    mesh[0].material.color = new THREE.Color(data.color);
+socket.on('words',function(data){
+    words = data;
+    init();
 });
 socket.on('onJoin',function(data){
     console.log(data)
