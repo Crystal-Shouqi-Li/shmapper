@@ -11,3 +11,8 @@ function getNumberUsers(){
 	  console.log(data)
 	});
 }
+function sendWords(){
+	$.post("/form", function(data){
+		console.log(data)
+	})
+}

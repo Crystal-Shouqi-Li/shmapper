@@ -5,15 +5,35 @@
 
     <script src="library/jquery-3.2.1.min.js" type="text/javascript"></script>    
     <script type="text/javascript">
-    	function sendColor(color) {
-    		console.log(color);
-    	}
+        function sendWords() {
+            // get .value from inputbox
+            var words=document.getElementById("wordInput").value;
+
+            var postBody = {
+                "words" : words,
+                "time" : "now"
+            }
+
+            // send jQuery POST request 
+            $.post("/form", postBody, function (response){
+            console.log(response.words);
+         });
+
+            console.log("After Post Code");
+                // get response from server and display on screen
+        }
+
+        
+        
+    
+    
+
     </script>
 </head>
 <body>
-	<button onclick="sendColor('red')">Red</button>
-	<button onclick="sendColor('green')">Green</button>
-	<button onclick="sendColor('blue')">Blue</button>
-	<button onclick="sendColor('kjsdfajkdsaf')">Bad Data</button>
+   
+    words: <input id="wordInput" type="text" name="color" placeholder="Enter Phrase"><br>
+    <button onclick="sendWords()">Submit</button>
+
 </body>
 </html>
