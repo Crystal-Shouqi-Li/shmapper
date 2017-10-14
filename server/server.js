@@ -34,13 +34,12 @@ io.on('connection', function(socket){
 });
 
 app.post('/button',(req,res)=>{
-  console.log(req.body.color)
-  io.emit('newColor',{'color':req.body.color})
-  res.json({"count":count})
-  count++
+  console.log(req.body.color);
+  io.emit('newColor',{'color':req.body.color});
+  res.json({"count":count});
 })
 app.post('/getUserCount',(req,res)=>{
-    res.json({"count":count})
+    res.json({"count":count});
 })
 // ------------ Server Setup --------------//
 
