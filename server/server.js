@@ -9,6 +9,18 @@ var cookieParser = require('cookie-parser'); //Parse Cookie header and populate 
 var bodyParser = require('body-parser'); //allows the use of req.body in POST request
 var server = require('http').createServer(app); //creates an HTTP server instance
 var io = require('socket.io')(server);
+
+var api = require('./routes/api'); //gets api logic from path
+
+// add for Mongo support
+var mongoose = require('mongoose');                         
+var mongoURI = "mongodb://127.0.0.1:27017/DataBaseNameHere";
+var MongoDB = mongoose.connect(mongoURI).connection;
+MongoDB.on('error', function(err) { console.log(err.message); });
+MongoDB.once('open', function() {
+  console.log("mongodb connection open");
+});
+
 //-------------------------Express JS configs-----------------------------//
 app.use(logger('dev')); //debugs logs in terminal
 // IMPORTANT: If you don't use bodyParser then you will NOT be able to call req.body.value
@@ -19,6 +31,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))) //sets all static file calls to 
 
 //---------------API-------------------//
+app.use('/api', api);
+
 app.get('/controller', (req,res) => {
   res.sendFile(path.join(__dirname, 'public/controller.html'));
 })
