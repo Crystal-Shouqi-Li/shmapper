@@ -30,6 +30,7 @@ io.on('connection', function(socket){
 var count = 0;
 app.post('/button',(req,res)=>{
   console.log(req.body.color)
+  io.emit('newColor',{'color':req.body.color})
   res.json({"count":count})
   count++
 })
