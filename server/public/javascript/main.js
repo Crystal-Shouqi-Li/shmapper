@@ -43,8 +43,16 @@ function init() {
 
     window.addEventListener( 'resize', onWindowResize, false );
 
+    geometry = new THREE.SphereGeometry( 10, 10, 10 );
+    material = new THREE.MeshNormalMaterial();
+    for ( var i = 0; i < 300; i++ ) {
+        //mesh = new THREE.Mesh( geometry, material );
+        sphereMesh.push(new THREE.Mesh( geometry, material ));
+    }
+
     for( var i = 0; i < words.length; i++ ) {
         explode(i);
+        setTimeout(addSpheres, 3000);
     }
     animate();
 }
@@ -58,6 +66,22 @@ function onWindowResize() {
 function explode(index) {
         boxMesh[index].userData.loop =
             setInterval(changeSize, 30, index);
+}
+
+var sphereClone = [];
+function addSpheres() {
+    sphereClone = [];
+    for ( var i = 0; i < sphereMesh.length; i++ ) {
+        sphereClone.push(sphereMesh[i]);
+    }
+    for ( var i = 0; i < sphereClone.length; i++ ) {
+        sphereClone[i].position.x = ( Math.random() - 0.5 ) * 1000;
+        sphereClone[i].position.y = ( Math.random() - 0.5 ) * 1000;
+        sphereClone[i].position.z = ( Math.random() - 0.5 ) * 1000;
+        scene.add( sphereClone[i] );
+        sphereClone[i].updateMatrix();
+        sphereClone[i].matrixAutoUpdate = false;
+    }
 }
 
 function animate() {
