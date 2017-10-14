@@ -19,23 +19,26 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))) //sets all static file calls to 
 
 //---------------API-------------------//
- 
+ var count = 0;
 io.on('connection', function(socket){
+  count++;
   console.log('a user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
+    count--;
+
   });
 });
 
-var count = 0;
+
 app.post('/button',(req,res)=>{
   console.log(req.body.color)
   io.emit('newColor',{'color':req.body.color})
   res.json({"count":count})
   count++
 })
-app.get('/button',(req,res)=>{
-  console.log('get button')
+app.post('/getUserCount',(req,res)=>{
+    res.json({"count":count})
 })
 // ------------ Server Setup --------------//
 
