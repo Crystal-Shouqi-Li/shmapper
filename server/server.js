@@ -19,8 +19,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))) //sets all static file calls to 
 
 //---------------API-------------------//
-
-
+var count = 0;
+app.post('/button',(req,res)=>{
+  console.log(req.body.color)
+  res.json({"count":count})
+  count++
+})
+app.get('/button',(req,res)=>{
+  console.log('get button')
+})
 // ------------ Server Setup --------------//
 
 /**
