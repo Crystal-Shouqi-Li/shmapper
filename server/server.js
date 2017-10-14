@@ -19,6 +19,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))) //sets all static file calls to 
 
 //---------------API-------------------//
+app.get('/controller', (req,res) => {
+  res.sendFile(path.join(__dirname, 'public/controller.html'));
+})
+
  var count = 0;
 io.on('connection', function(socket){
   count++;
@@ -26,10 +30,8 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     console.log('user disconnected');
     count--;
-
   });
 });
-
 
 app.post('/button',(req,res)=>{
   console.log(req.body.color)
@@ -51,7 +53,6 @@ app.post('/getUserCount',(req,res)=>{
 var port = normalizePort(process.env.PORT || '9000');
 app.set('port', port);
 
-
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -66,17 +67,14 @@ server.on('listening', onListening);
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
-
   if (isNaN(port)) {
     // named pipe
     return val;
   }
-
   if (port >= 0) {
     // port number
     return port;
   }
-
   return false;
 }
 
