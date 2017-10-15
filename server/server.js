@@ -10,6 +10,9 @@ var bodyParser = require('body-parser'); //allows the use of req.body in POST re
 var server = require('http').createServer(app); //creates an HTTP server instance
 var io = require('socket.io')(server);
 
+var dgram = require('dgram');
+var ip = require('ip');
+
 // var api = require('./routes/api'); //gets api logic from path
 
 // // add for Mongo support
@@ -60,7 +63,7 @@ app.post('/getUserCount',(req,res)=>{
 })
 
 app.post('/form', (req, res)=>{
-  io.emit('wordCount',{'word':req.body});
+  io.emit('newWords',{'words':req.body.words});
   res.json(req.body)
 })
 // ------------ Server Setup --------------//
@@ -138,16 +141,15 @@ function onListening() {
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
 }
-var ip = require('ip');
+
 
 var PORT = 6419;
 var HOST = ip.address();
 
-var dgram = require('dgram');
-var server = dgram.createSocket('udp4');
+var dragonServer = dgram.createSocket('udp4');
 
 dragonServer.on('listening', function () {
-    var address = server.address();
+    var address = dragonServer.address();
     console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
 
@@ -165,9 +167,15 @@ dragonServer.on('message', function (message, remote) {
 
    } else if (trimStr[0] == '1') {
     // light change
-    var lightLevel = parseFloat(trimStr.substring(2,trimStr.length));
+    console.log(trimStr.substring(2,trimStr.length));
+    var lightLevel = parseFloat(trimStr.substring(2,trimStr.length)) * 2.5;
+
+    console.log("----" + lightLevel);
     lightLevel = Math.max(0, lightLevel);
     lightLevel = Math.min(100, lightLevel);
+    lightLevel = Math.floor(lightLevel);
+
+ console.log("---===-" + lightLevel);
 
     io.emit('lightLevel',{"level": lightLevel});
    }

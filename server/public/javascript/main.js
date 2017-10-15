@@ -6,7 +6,10 @@ var colors = [new THREE.Color( 'red' ), new THREE.Color( 'orange' ),
             new THREE.Color( 'green' ), new THREE.Color( 'blue' ),
             new THREE.Color( 'purple' )];
 var colorIndex = 0;
+var light;
+var geometry;
 var words = ["Hello", "Clare", "HI"];
+var material;
 //wait();
 init();
 /*
@@ -21,7 +24,7 @@ function init() {
     camera.position.z = 1000;
     scene = new THREE.Scene();
 
-    var light = new THREE.AmbientLight( 0xffffff );
+    light = new THREE.AmbientLight( 0xffffff );
     scene.add( light );
 
     renderer = new THREE.WebGLRenderer();
@@ -29,8 +32,30 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    var geometry = new THREE.BoxGeometry( 120, 120, 120 );
-    var material = new THREE.MeshBasicMaterial();
+    geometry = new THREE.BoxGeometry( 120, 120, 120 );
+    material = new THREE.MeshLambertMaterial();
+    
+    addBoxes();
+
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls.addEventListener( 'change', render );
+    controls.enableZoom = false;
+
+    window.addEventListener( 'resize', onWindowResize, false );
+
+    geometry = new THREE.SphereGeometry( 10, 10, 10 );
+    for ( var i = 0; i < 300; i++ ) {
+        sphereMesh.push(new THREE.Mesh( geometry, material ));
+    }
+
+    
+    animate();
+}
+
+function addBoxes() {
+    geometry = new THREE.BoxGeometry( 350/words.length, 350/words.length, 350/words.length );
+    material = new THREE.MeshLambertMaterial();
+
     for ( var i = 0; i < words.length; i++ ) {
         boxMesh[i] = new THREE.Mesh( geometry, material );
         boxMesh[i].userData.count = 0;
@@ -45,23 +70,10 @@ function init() {
         scene.add( boxMesh[i] );
     }
 
-    controls = new THREE.OrbitControls( camera, renderer.domElement );
-    controls.addEventListener( 'change', render );
-    controls.enableZoom = false;
-
-    window.addEventListener( 'resize', onWindowResize, false );
-
-    geometry = new THREE.SphereGeometry( 10, 10, 10 );
-    material = new THREE.MeshBasicMaterial();
-    for ( var i = 0; i < 300; i++ ) {
-        sphereMesh.push(new THREE.Mesh( geometry, material ));
-    }
-
     for( var i = 0; i < words.length; i++ ) {
         explode(i);
         setTimeout(addSpheres, 3000);
     }
-    animate();
 }
 
 function onWindowResize() {
@@ -96,6 +108,12 @@ function addSpheres() {
         sphereClone[i].updateMatrix();
         sphereClone[i].matrixAutoUpdate = false;
     }
+
+    setTimeout(function( ) {
+        for ( var i = 0; i < sphereMesh.length; i++ ) {
+            scene.remove( sphereClone[i] );
+        }
+    }, 2000);
 }
 
 function animate() {
