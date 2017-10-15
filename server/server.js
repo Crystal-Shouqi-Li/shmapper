@@ -46,6 +46,28 @@ io.on('connection', function(socket){
     count--;
   });
 });
+////////////////////////////////////////
+var isOn = str1.substring(2,str1.length);
+isOn = parseInt(substr1);
+app.post('/getSubstr', (req, res)=>{
+  io.emit('isOn',{});
+  res.json({"isOn":isOn});
+})
+
+var turn = str2.substring(2,str2.length);
+turn = parseInt(substr2);
+app.post('/getSubstr', (req, res)=>{
+  io.emit('turn',{});
+  res.json({"turn":turn});
+})
+
+var lightLevel = str3.substring(2,str3.length);
+lightLevel = parseInt(lightLevel);
+app.post('/getSubstr', (req, res)=>{
+  io.emit('lightLevel',{});
+  res.json({"lightLevel":lightLevel});
+})
+/////////////////////////////////////////
 
 app.post('/color',(req,res)=>{
   console.log(req.body.color);
@@ -135,3 +157,22 @@ function onListening() {
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
 }
+var ip = require('ip');
+
+var PORT = 6419;
+var HOST = ip.address();
+
+var dgram = require('dgram');
+var server = dgram.createSocket('udp4');
+
+dragonServer.on('listening', function () {
+    var address = server.address();
+    console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+
+dragonServer.on('message', function (message, remote) {
+    console.log(remote.address + ':' + remote.port +' - ' + message);
+
+});
+
+dragonServer.bind(PORT, HOST);

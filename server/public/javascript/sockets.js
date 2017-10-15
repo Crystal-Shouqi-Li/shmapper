@@ -17,3 +17,9 @@ function sendWords(){
 		console.log(data)
 	})
 }
+////////////////////////////////////////////
+function getSubstr(){
+	$.post( "/getSubstr", function( data ) {
+	  console.log(data)
+}
+/////////////////////////////////////////////
