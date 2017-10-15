@@ -7,9 +7,10 @@ var colors = [new THREE.Color( 'red' ), new THREE.Color( 'orange' ),
             new THREE.Color( 'purple' )];
 var colorIndex = 0;
 var light;
-var geometry;
+var geometry, s_geometry;
 var words = ["Hello", "Clare", "HI"];
 var material;
+var decay = false;
 //wait();
 init();
 /*
@@ -43,9 +44,9 @@ function init() {
 
     window.addEventListener( 'resize', onWindowResize, false );
 
-    geometry = new THREE.SphereGeometry( 10, 10, 10 );
+    s_geometry = new THREE.SphereGeometry( 10, 10, 10 );
     for ( var i = 0; i < 300; i++ ) {
-        sphereMesh.push(new THREE.Mesh( geometry, material ));
+        sphereMesh.push(new THREE.Mesh( s_geometry, material ));
     }
 
     
@@ -72,7 +73,7 @@ function addBoxes() {
 
     for( var i = 0; i < words.length; i++ ) {
         explode(i);
-        setTimeout(addSpheres, 3000);
+        setTimeout(addSpheres, 3500);
     }
 }
 
@@ -96,6 +97,7 @@ function changeColor() {
 
 var sphereClone = [];
 function addSpheres() {
+
     sphereClone = [];
     for ( var i = 0; i < sphereMesh.length; i++ ) {
         sphereClone.push(sphereMesh[i]);
@@ -106,14 +108,19 @@ function addSpheres() {
         sphereClone[i].position.z = ( Math.random() - 0.5 ) * 1000;
         scene.add( sphereClone[i] );
         sphereClone[i].updateMatrix();
-        sphereClone[i].matrixAutoUpdate = false;
+       // sphereClone[i].matrixAutoUpdate = false;
     }
+
+    decay = true;
 
     setTimeout(function( ) {
         for ( var i = 0; i < sphereMesh.length; i++ ) {
             scene.remove( sphereClone[i] );
         }
-    }, 2000);
+        decay = false;
+
+    }, 2500);
+
 }
 
 function animate() {
@@ -122,6 +129,12 @@ function animate() {
     for (var i = 0; i < boxMesh.length; i++) {
         boxMesh[i].rotation.x += (i % 2 == 0) ? -.005 : .005;
         boxMesh[i].rotation.y += (i % 2 == 0) ? -.01 : .01;
+    }
+
+    if (decay) { 
+        for (var i = 0; i < sphereClone.length; i++) {
+            sphereClone[i].position.y -=  ( Math.random() ) * 7.5;
+        }
     }
     render();
 }
