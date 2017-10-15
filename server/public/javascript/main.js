@@ -1,6 +1,11 @@
 var camera, scene, renderer;
 var boxMesh = [];
 var sphereMesh = [];
+var colors = [new THREE.Color( 'red' ), new THREE.Color( 'orange' ),
+            new THREE.Color( 'yellow' ), new THREE.Color( 'green' ),
+            new THREE.Color( 'green' ), new THREE.Color( 'blue' ),
+            new THREE.Color( 'purple' )];
+var colorIndex = 0;
 var words = ["Hello", "Clare", "HI"];
 //wait();
 init();
@@ -15,6 +20,9 @@ function init() {
     camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 10000 );
     camera.position.z = 1000;
     scene = new THREE.Scene();
+
+    var light = new THREE.AmbientLight( 0xffffff );
+    scene.add( light );
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -43,8 +51,15 @@ function init() {
 
     window.addEventListener( 'resize', onWindowResize, false );
 
+    geometry = new THREE.SphereGeometry( 10, 10, 10 );
+    material = new THREE.MeshBasicMaterial();
+    for ( var i = 0; i < 300; i++ ) {
+        sphereMesh.push(new THREE.Mesh( geometry, material ));
+    }
+
     for( var i = 0; i < words.length; i++ ) {
         explode(i);
+        setTimeout(addSpheres, 3000);
     }
     animate();
 }
@@ -60,6 +75,29 @@ function explode(index) {
             setInterval(changeSize, 30, index);
 }
 
+function changeColor() {
+    for ( var i = 0; i < sphereMesh.length; i++ ) {
+        sphereMesh[i].color.set(colors[colorIndex]);
+        colorIndex++;
+    }
+}
+
+var sphereClone = [];
+function addSpheres() {
+    sphereClone = [];
+    for ( var i = 0; i < sphereMesh.length; i++ ) {
+        sphereClone.push(sphereMesh[i]);
+    }
+    for ( var i = 0; i < sphereClone.length; i++ ) {
+        sphereClone[i].position.x = ( Math.random() - 0.5 ) * 1000;
+        sphereClone[i].position.y = ( Math.random() - 0.5 ) * 1000;
+        sphereClone[i].position.z = ( Math.random() - 0.5 ) * 1000;
+        scene.add( sphereClone[i] );
+        sphereClone[i].updateMatrix();
+        sphereClone[i].matrixAutoUpdate = false;
+    }
+}
+
 function animate() {
     requestAnimationFrame( animate );
     controls.update();
@@ -71,7 +109,6 @@ function animate() {
 }
 
 function changeSize(i) {
-   // console.log(((count % 40) - 20));
     if(((boxMesh[i].userData.count % 40) - 20) < 0 ) {
         increaseSize( i , 0.05 );
     } else {
@@ -79,27 +116,10 @@ function changeSize(i) {
     }
     boxMesh[i].userData.count++;
 
-    /*
-    if ( boxMesh[i].userData.count < 20 ) {
-        increaseSize( i, 0.05 );
-        boxMesh[i].userData.count++;
-        if ( boxMesh[i].userData.count == 20 ) {
-            boxMesh[i].userData.count = 40;
-        }
-    } else {
-        decreaseSize( i, 0.05 );
-        boxMesh[i].userData.count--;
-        if ( boxMesh[i].userData.count == 20 ) {
-            boxMesh[i].userData.count = 0;
-        }
-    }
-*/
     if ( boxMesh[i].userData.count >= 100 ) {
         clearInterval(boxMesh[i].userData.loop);
         boxMesh[i].visible = false;
     }
-
-
 }
 
 function increaseSize(i, amnt) {
