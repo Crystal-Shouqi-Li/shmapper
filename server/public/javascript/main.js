@@ -1,6 +1,11 @@
 var camera, scene, renderer;
 var boxMesh = [];
 var sphereMesh = [];
+var colors = [new THREE.Color( 'red' ), new THREE.Color( 'orange' ),
+            new THREE.Color( 'yellow' ), new THREE.Color( 'green' ),
+            new THREE.Color( 'green' ), new THREE.Color( 'blue' ),
+            new THREE.Color( 'purple' )];
+var colorIndex = 0;
 var words = ["Hello", "Clare", "HI"];
 //wait();
 init();
@@ -16,13 +21,16 @@ function init() {
     camera.position.z = 1000;
     scene = new THREE.Scene();
 
+    var light = new THREE.AmbientLight( 0xffffff );
+    scene.add( light );
+
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
     var geometry = new THREE.BoxGeometry( 120, 120, 120 );
-    var material = new THREE.MeshBasicMaterial();
+    var material = new THREE.MeshStandardMaterial( { color: 0xffffff } );
     for ( var i = 0; i < words.length; i++ ) {
         boxMesh[i] = new THREE.Mesh( geometry, material );
         boxMesh[i].userData.count = 0;
@@ -44,9 +52,8 @@ function init() {
     window.addEventListener( 'resize', onWindowResize, false );
 
     geometry = new THREE.SphereGeometry( 10, 10, 10 );
-    material = new THREE.MeshNormalMaterial();
+    material = new THREE.MeshStandardMaterial();
     for ( var i = 0; i < 300; i++ ) {
-        //mesh = new THREE.Mesh( geometry, material );
         sphereMesh.push(new THREE.Mesh( geometry, material ));
     }
 
@@ -66,6 +73,13 @@ function onWindowResize() {
 function explode(index) {
         boxMesh[index].userData.loop =
             setInterval(changeSize, 30, index);
+}
+
+function changeColor() {
+    for ( var i = 0; i < sphereMesh.length; i++ ) {
+        sphereMesh[i].color.set(colors[colorIndex]);
+        colorIndex++;
+    }
 }
 
 var sphereClone = [];
@@ -95,7 +109,6 @@ function animate() {
 }
 
 function changeSize(i) {
-   // console.log(((count % 40) - 20));
     if(((boxMesh[i].userData.count % 40) - 20) < 0 ) {
         increaseSize( i , 0.05 );
     } else {
@@ -103,27 +116,10 @@ function changeSize(i) {
     }
     boxMesh[i].userData.count++;
 
-    /*
-    if ( boxMesh[i].userData.count < 20 ) {
-        increaseSize( i, 0.05 );
-        boxMesh[i].userData.count++;
-        if ( boxMesh[i].userData.count == 20 ) {
-            boxMesh[i].userData.count = 40;
-        }
-    } else {
-        decreaseSize( i, 0.05 );
-        boxMesh[i].userData.count--;
-        if ( boxMesh[i].userData.count == 20 ) {
-            boxMesh[i].userData.count = 0;
-        }
-    }
-*/
     if ( boxMesh[i].userData.count >= 100 ) {
         clearInterval(boxMesh[i].userData.loop);
         boxMesh[i].visible = false;
     }
-
-
 }
 
 function increaseSize(i, amnt) {
