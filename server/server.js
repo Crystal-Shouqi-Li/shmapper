@@ -10,16 +10,16 @@ var bodyParser = require('body-parser'); //allows the use of req.body in POST re
 var server = require('http').createServer(app); //creates an HTTP server instance
 var io = require('socket.io')(server);
 
-var api = require('./routes/api'); //gets api logic from path
+// var api = require('./routes/api'); //gets api logic from path
 
-// add for Mongo support
-var mongoose = require('mongoose');                         
-var mongoURI = "mongodb://127.0.0.1:27017/DataBaseNameHere";
-var MongoDB = mongoose.connect(mongoURI).connection;
-MongoDB.on('error', function(err) { console.log(err.message); });
-MongoDB.once('open', function() {
-  console.log("mongodb connection open");
-});
+// // add for Mongo support
+// var mongoose = require('mongoose');                         
+// var mongoURI = "mongodb://127.0.0.1:27017/DataBaseNameHere";
+// var MongoDB = mongoose.connect(mongoURI).connection;
+// MongoDB.on('error', function(err) { console.log(err.message); });
+// MongoDB.once('open', function() {
+//   console.log("mongodb connection open");
+// });
 
 //-------------------------Express JS configs-----------------------------//
 app.use(logger('dev')); //debugs logs in terminal
@@ -31,7 +31,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))) //sets all static file calls to 
 
 //---------------API-------------------//
-app.use('/api', api);
+// app.use('/api', api);
 
 app.get('/controller', (req,res) => {
   res.sendFile(path.join(__dirname, 'public/controller.html'));
@@ -47,26 +47,7 @@ io.on('connection', function(socket){
   });
 });
 ////////////////////////////////////////
-var isOn = str1.substring(2,str1.length);
-isOn = parseInt(substr1);
-app.post('/getSubstr', (req, res)=>{
-  io.emit('isOn',{});
-  res.json({"isOn":isOn});
-})
 
-var turn = str2.substring(2,str2.length);
-turn = parseInt(substr2);
-app.post('/getSubstr', (req, res)=>{
-  io.emit('turn',{});
-  res.json({"turn":turn});
-})
-
-var lightLevel = str3.substring(2,str3.length);
-lightLevel = parseInt(lightLevel);
-app.post('/getSubstr', (req, res)=>{
-  io.emit('lightLevel',{});
-  res.json({"lightLevel":lightLevel});
-})
 /////////////////////////////////////////
 
 app.post('/color',(req,res)=>{
@@ -171,7 +152,25 @@ dragonServer.on('listening', function () {
 });
 
 dragonServer.on('message', function (message, remote) {
-    console.log(remote.address + ':' + remote.port +' - ' + message);
+
+   var trimStr = message.toString().trim();
+
+   if (trimStr[0] == '0') {
+    // swtich colors
+    var isOn = parseInt(trimStr.substring(2,trimStr.length));
+    if (isOn) {
+      // only send socket when turned on
+      io.emit('nextColor',{});
+    }
+
+   } else if (trimStr[0] == '1') {
+    // light change
+    var lightLevel = parseFloat(trimStr.substring(2,trimStr.length));
+    lightLevel = Math.max(0, lightLevel);
+    lightLevel = Math.min(100, lightLevel);
+
+    io.emit('lightLevel',{"level": lightLevel});
+   }
 
 });
 
