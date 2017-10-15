@@ -30,7 +30,7 @@ function init() {
     document.body.appendChild( renderer.domElement );
 
     var geometry = new THREE.BoxGeometry( 120, 120, 120 );
-    var material = new THREE.MeshStandardMaterial( { color: 0xffffff } );
+    var material = new THREE.MeshBasicMaterial();
     for ( var i = 0; i < words.length; i++ ) {
         boxMesh[i] = new THREE.Mesh( geometry, material );
         boxMesh[i].userData.count = 0;
@@ -52,7 +52,7 @@ function init() {
     window.addEventListener( 'resize', onWindowResize, false );
 
     geometry = new THREE.SphereGeometry( 10, 10, 10 );
-    material = new THREE.MeshStandardMaterial();
+    material = new THREE.MeshBasicMaterial();
     for ( var i = 0; i < 300; i++ ) {
         sphereMesh.push(new THREE.Mesh( geometry, material ));
     }
