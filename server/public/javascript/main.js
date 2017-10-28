@@ -55,7 +55,7 @@ function init() {
 
 function addBoxes() {
     geometry = new THREE.BoxGeometry( 350/words.length, 350/words.length, 350/words.length );
-    material = new THREE.MeshLambertMaterial();
+    // material = new THREE.MeshLambertMaterial();
 
     for ( var i = 0; i < words.length; i++ ) {
         boxMesh[i] = new THREE.Mesh( geometry, material );
@@ -114,12 +114,12 @@ function addSpheres() {
     decay = true;
 
     setTimeout(function( ) {
-        for ( var i = 0; i < sphereMesh.length; i++ ) {
+        for ( var i = 0; i < sphereClone.length; i++ ) {
             scene.remove( sphereClone[i] );
         }
         decay = false;
 
-    }, 2500);
+    }, 7000);
 
 }
 
@@ -133,7 +133,7 @@ function animate() {
 
     if (decay) { 
         for (var i = 0; i < sphereClone.length; i++) {
-            sphereClone[i].position.y -=  ( Math.random() ) * 7.5;
+            sphereClone[i].position.y -=  ( Math.random() ) * 2.5;
         }
     }
     render();

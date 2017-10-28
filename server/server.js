@@ -167,15 +167,15 @@ dragonServer.on('message', function (message, remote) {
 
    } else if (trimStr[0] == '1') {
     // light change
-    console.log(trimStr.substring(2,trimStr.length));
+    // console.log(trimStr.substring(2,trimStr.length));
     var lightLevel = parseFloat(trimStr.substring(2,trimStr.length)) * 2.5;
 
-    console.log("----" + lightLevel);
+    // console.log("----" + lightLevel);
     lightLevel = Math.max(0, lightLevel);
     lightLevel = Math.min(100, lightLevel);
     lightLevel = Math.floor(lightLevel);
 
- console.log("---===-" + lightLevel);
+ console.log("Light Level: [" + lightLevel + " of 100]");
 
     io.emit('lightLevel',{"level": lightLevel});
    }
